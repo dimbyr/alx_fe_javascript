@@ -81,7 +81,7 @@ document.addEventListener(
       const a = document.createElement('a');
       a.href = quoteUrl;
       a.download = "quotes.json"
-      a.textContent = "Export quotes";
+      a.textContent = "Export Quotes";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a); //
