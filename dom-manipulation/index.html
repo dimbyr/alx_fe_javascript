@@ -10,7 +10,11 @@
   <div id="quoteDisplay"></div>
   <button id="newQuote">Show New Quote</button>
   <button id="createQuote">Create Quote</button>
+  <button id="export">Export my quotes</button>
   <div id="addFormQuoteContainer"></div>
+  <br>
+  <label for="importFile">Import quotes</label>
+  <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile" />
   <script src="script.js"></script>
 </body>
 </html>

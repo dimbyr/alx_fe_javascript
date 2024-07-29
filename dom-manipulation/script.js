@@ -21,6 +21,7 @@ document.addEventListener(
     const newQuoteButton = document.getElementById("newQuote");
     const createQuoteButton = document.getElementById("createQuote");
     const newQuoteForm = document.getElementById("addFormQuoteContainer");
+    const exportButton = document.getElementById("export");
 
     quoteDisplay.innerHTML = JSON.parse(sessionStorage.getItem("lastViewed")) || "";
 
@@ -73,6 +74,34 @@ document.addEventListener(
       event.target.style.display = "none";
     }
     );
+
+    function exportQuote(){
+      const quoteData = new Blob([JSON.stringify(quotes)], {type: 'application/json'});
+      const quoteUrl = URL.createObjectURL(quoteData);
+      const a = document.createElement('a');
+      a.href = quoteUrl;
+      a.download = "quotes.json"
+      a.textContent = "Export my quotes";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a); //
+      URL.revokeObjectURL(quoteUrl); //free up memory
+    }
+
+    exportButton.addEventListener('click',
+      exportQuote
+    )
+
+    function importFromJsonFile(event) {
+      const fileReader = new FileReader();
+      fileReader.onload = function(event) {
+        const importedQuotes = JSON.parse(event.target.result);
+        quotes.push(...importedQuotes);
+        // saveQuotes();
+        alert('Quotes imported successfully!');
+      };
+      fileReader.readAsText(event.target.files[0]);
+    }
 
   }
 )
