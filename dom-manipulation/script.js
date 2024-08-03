@@ -23,6 +23,7 @@ document.addEventListener(
     const newQuoteForm = document.getElementById("addFormQuoteContainer");
     const exportButton = document.getElementById("export");
     const filterButton = document.getElementById("categoryFilter");
+    const importButton = document.getElementById("importFile");
 
     quoteDisplay.innerHTML = JSON.parse(sessionStorage.getItem("lastViewed")) || "";
 
@@ -100,21 +101,26 @@ document.addEventListener(
       fileReader.onload = function(event) {
         const importedQuotes = JSON.parse(event.target.result);
         quotes.push(...importedQuotes);
+        localStorage.setItem("quotes", JSON.stringify(quotes));
         // saveQuotes();
         alert('Quotes imported successfully!');
       };
       fileReader.readAsText(event.target.files[0]);
     }
 
+    importButton.addEventListener("change", function(event){importFromJsonFile(event);});
+
     function filterQuotesArray(quotesArray, category) {
       let cat = category.toLowerCase();
       if (cat === 'all') {
         return quotesArray;
       } else {
-        let filtered = quotesArray.filter(q => q.category.toLowerCase() === cat);
-        console.table(filtered);
-        return filtered;
+        return quotesArray.filter(q => q.category.toLowerCase() === cat);
       }
+    }
+
+    function updateCategory(){
+      
     }
   }
 )
