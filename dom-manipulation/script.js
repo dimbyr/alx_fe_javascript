@@ -22,19 +22,22 @@ document.addEventListener(
     const createQuoteButton = document.getElementById("createQuote");
     const newQuoteForm = document.getElementById("addFormQuoteContainer");
     const exportButton = document.getElementById("export");
+    const filterButton = document.getElementById("categoryFilter");
 
     quoteDisplay.innerHTML = JSON.parse(sessionStorage.getItem("lastViewed")) || "";
 
-    function showRandomQuote(){
-      const quoteIndex = Math.floor(Math.random()*quotes.length);
-      const randomQuote = quotes[quoteIndex];
-      const viewed = `<p>\"${randomQuote.text}\"</p> <p> Category: ${randomQuote.category}</p>`;
+    function showRandomQuote(qt = quotes, category = 'all'){
+      let selectedQuotes = filterQuotesArray(qt, category);
+      let quoteIndex = Math.floor(Math.random()*selectedQuotes.length);
+      let randomQuote = selectedQuotes[quoteIndex];
+      let viewed = `<p>\"${randomQuote.text}\"</p> <p> Category: ${randomQuote.category}</p>`;
       quoteDisplay.innerHTML = viewed;
       sessionStorage.setItem("lastViewed", JSON.stringify(viewed));
     }
 
-    newQuoteButton.addEventListener("click",
-      showRandomQuote
+    newQuoteButton.addEventListener("click", function(){
+      const categ = filterButton.value;
+      showRandomQuote(quotes, categ);}
     );
 
     function addQuote(){
@@ -103,5 +106,15 @@ document.addEventListener(
       fileReader.readAsText(event.target.files[0]);
     }
 
+    function filterQuotesArray(quotesArray, category) {
+      let cat = category.toLowerCase();
+      if (cat === 'all') {
+        return quotesArray;
+      } else {
+        let filtered = quotesArray.filter(q => q.category.toLowerCase() === cat);
+        console.table(filtered);
+        return filtered;
+      }
+    }
   }
 )
