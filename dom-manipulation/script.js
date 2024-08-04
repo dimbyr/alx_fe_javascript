@@ -25,10 +25,20 @@ document.addEventListener(
     const filterButton = document.getElementById("categoryFilter");
     const importButton = document.getElementById("importFile");
 
-    quoteDisplay.innerHTML = JSON.parse(sessionStorage.getItem("lastViewed")) || "";
+    populateCategory(quotes);
 
-    function showRandomQuote(qt = quotes, category = 'all'){
-      let selectedQuotes = filterQuotesArray(qt, category);
+    quoteDisplay.innerHTML = JSON.parse(sessionStorage.getItem("lastViewed")) || "";
+    const lastSelectedCategory = JSON.parse(localStorage.getItem('category')) || "all";
+    
+    for(var i, j = 0; i = filterButton.options[j]; j++) {
+      if(i.value == lastSelectedCategory) {
+          filterButton.selectedIndex = j;
+          break;
+      }
+    }
+    
+    function showRandomQuote(qt = quotes, category = lastSelectedCategory){
+      let selectedQuotes = filterQuotes(qt, category);
       let quoteIndex = Math.floor(Math.random()*selectedQuotes.length);
       let randomQuote = selectedQuotes[quoteIndex];
       let viewed = `<p>\"${randomQuote.text}\"</p> <p> Category: ${randomQuote.category}</p>`;
@@ -45,9 +55,10 @@ document.addEventListener(
       const newText = document.getElementById("newQuoteText").value;
       const newCategory = document.getElementById("newQuoteCategory").value;
       if (newText) {quotes.push({text: newText, category: newCategory});
+      populateCategory(quotes);
       alert(`Submitted quote of category ${newCategory}`);
       localStorage.setItem("quotes", JSON.stringify(quotes));}
-      console.table(quotes);
+      // console.table(quotes);
       
     }
 
@@ -101,6 +112,7 @@ document.addEventListener(
       fileReader.onload = function(event) {
         const importedQuotes = JSON.parse(event.target.result);
         quotes.push(...importedQuotes);
+        populateCategory(quotes);
         localStorage.setItem("quotes", JSON.stringify(quotes));
         // saveQuotes();
         alert('Quotes imported successfully!');
@@ -110,7 +122,7 @@ document.addEventListener(
 
     importButton.addEventListener("change", function(event){importFromJsonFile(event);});
 
-    function filterQuotesArray(quotesArray, category) {
+    function filterQuotes(quotesArray, category) {
       let cat = category.toLowerCase();
       if (cat === 'all') {
         return quotesArray;
@@ -119,8 +131,40 @@ document.addEventListener(
       }
     }
 
-    function updateCategory(){
-      
+    function populateCategory(quotes) {
+      const allCategories = categoryFilter(quotes);
+      let optionElements = '';
+    
+      allCategories.forEach(ct => {
+        optionElements += `<option value="${ct}">${ct}</option>`;
+      });
+    
+      filterButton.innerHTML = optionElements;
+      filterButton.style.textTransform = "capitalize";
+      filterButton.addEventListener("change",
+        (event) => {
+         localStorage.setItem("category", JSON.stringify(event.target.value));
+        }
+      )
     }
+    
+    function categoryFilter(quotesArray) {
+      const categories = extractCategory(quotesArray);
+      const existingCategories = Array.from(document.querySelectorAll('#categoryFilter>option'))
+        .map(option => option.value.toLowerCase());
+    
+      return [...new Set([...categories, ...existingCategories])];
+    }
+    
+    function extractCategory(quotesArray) {
+      const categories = [];
+      quotesArray.forEach(qt => {
+        if (!categories.includes(qt.category.toLowerCase())) {
+          categories.push(qt.category.toLowerCase());
+        }
+      });
+      return categories;
+    }
+    
   }
 )
