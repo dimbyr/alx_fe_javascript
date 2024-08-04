@@ -25,6 +25,7 @@ document.addEventListener(
     const filterButton = document.getElementById("categoryFilter");
     const importButton = document.getElementById("importFile");
 
+    fetchQuotesFromServer();
     populateCategories(quotes);
 
     quoteDisplay.innerHTML = JSON.parse(sessionStorage.getItem("lastViewed")) || "";
@@ -173,8 +174,10 @@ document.addEventListener(
       try {
         const response = await fetch(apiUrl);
         const data = await response.json();
-        quotes.push(...data.map(postToQuote));
-        localStorage.setItem("quotes", JSON.stringify(quotes));
+        const qts = [...syncQuotes(quotes, data.map(postToQuote))];
+        // quotes.push(...data.map(postToQuote));
+        populateCategories(qts);
+        localStorage.setItem("quotes", JSON.stringify(qts));
       } catch (error) {
         console.error(`Data not fetched: ${error}`);
       }
@@ -204,8 +207,18 @@ document.addEventListener(
         console.error(`Data not posted: ${error}`);
       }
     }
-
-    fetchQuotesFromServer();
     
+    function syncQuotes(localQuotes, serverQuotes){
+      if (!localQuotes.includes(...serverQuotes)){
+        serverQuotes.forEach( (qt)=> {
+          if(!localQuotes.includes(qt)){
+            localQuotes.push(qt);
+          }
+        })
+      }
+      return localQuotes;
+    }
+
+
   }
 )
