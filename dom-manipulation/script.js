@@ -178,6 +178,7 @@ document.addEventListener(
         // quotes.push(...data.map(postToQuote));
         populateCategories(qts);
         localStorage.setItem("quotes", JSON.stringify(qts));
+        alert("Quotes synced with server!")
       } catch (error) {
         console.error(`Data not fetched: ${error}`);
       }
