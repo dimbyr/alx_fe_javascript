@@ -38,7 +38,7 @@ document.addEventListener(
     }
 
     function showRandomQuote(qt = quotes, category = selectedCategory){
-      let selectedQuotes = filterQuotes(qt, category);
+      let selectedQuotes = filterQuote(qt, category);
       let quoteIndex = Math.floor(Math.random()*selectedQuotes.length);
       let randomQuote = selectedQuotes[quoteIndex];
       let viewed = `<p>\"${randomQuote.text}\"</p> <p> Category: ${randomQuote.category}</p>`;
@@ -122,7 +122,7 @@ document.addEventListener(
 
     importButton.addEventListener("change", function(event){importFromJsonFile(event);});
 
-    function filterQuotes(quotesArray, category) {
+    function filterQuote(quotesArray, category) {
       let cat = category.toLowerCase();
       if (cat === 'all') {
         return quotesArray;
