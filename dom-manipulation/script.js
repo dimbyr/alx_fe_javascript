@@ -168,12 +168,11 @@ document.addEventListener(
     
     // setInterval(fetchData, 5000);
 
-    async function fetchData() {
+    async function fetchQuotesFromServer() {
       const apiUrl = "https://jsonplaceholder.typicode.com/posts";
       try {
         const response = await fetch(apiUrl);
         const data = await response.json();
-        // console.log(data.map(postToQuote));
         quotes.push(...data.map(postToQuote));
         localStorage.setItem("quotes", JSON.stringify(quotes));
       } catch (error) {
@@ -206,7 +205,7 @@ document.addEventListener(
       }
     }
 
-    fetchData();
+    fetchQuotesFromServer();
     
   }
 )
