@@ -166,5 +166,47 @@ document.addEventListener(
       return categories;
     }
     
+    // setInterval(fetchData, 5000);
+
+    async function fetchData() {
+      const apiUrl = "https://jsonplaceholder.typicode.com/posts";
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        // console.log(data.map(postToQuote));
+        quotes.push(...data.map(postToQuote));
+        localStorage.setItem("quotes", JSON.stringify(quotes));
+      } catch (error) {
+        console.error(`Data not fetched: ${error}`);
+      }
+    }
+
+    function postToQuote(data){
+      return {
+        text: `${data.body}`,
+        category: 'Uncategorized'
+      };
+    }
+    // const newPost = {text: "Do not eat yourself", category: "foolish"};
+    // postData("https://jsonplaceholder.typicode.com/posts", newPost);
+    async function postData(apiUrl, data) {
+      try {
+        const post = await fetch(
+          apiUrl,
+        {
+          method: "POST",
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data)
+        }
+        );
+        const postedData = await post.json();
+        console.table(postedData);
+      } catch (error) {
+        console.error(`Data not posted: ${error}`);
+      }
+    }
+
+    fetchData();
+    
   }
 )
