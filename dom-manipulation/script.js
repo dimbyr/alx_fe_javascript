@@ -28,16 +28,16 @@ document.addEventListener(
     populateCategories(quotes);
 
     quoteDisplay.innerHTML = JSON.parse(sessionStorage.getItem("lastViewed")) || "";
-    const lastSelectedCategory = JSON.parse(localStorage.getItem('category')) || "all";
+    const selectedCategory = JSON.parse(localStorage.getItem('category')) || "all";
     
     for(var i, j = 0; i = filterButton.options[j]; j++) {
-      if(i.value == lastSelectedCategory) {
+      if(i.value == selectedCategory) {
           filterButton.selectedIndex = j;
           break;
       }
     }
 
-    function showRandomQuote(qt = quotes, category = lastSelectedCategory){
+    function showRandomQuote(qt = quotes, category = selectedCategory){
       let selectedQuotes = filterQuotes(qt, category);
       let quoteIndex = Math.floor(Math.random()*selectedQuotes.length);
       let randomQuote = selectedQuotes[quoteIndex];
